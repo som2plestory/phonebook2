@@ -76,7 +76,7 @@ public class PhoneController extends HttpServlet {
 			System.out.println(count);
 			
 			//리다이렉트 list
-			WebUtil.redirect(request, response, "./pbc?action=list");
+			WebUtil.redirect(request, response, "/pbc?action=list");
 			/*
 			response.sendRedirect("./pbc?action=list");
 			*/
@@ -91,10 +91,33 @@ public class PhoneController extends HttpServlet {
 			int count = phoneDao.personDelete(id);
 			
 			//리다이렉트 list
-			WebUtil.redirect(request, response, "./pbc?action=list");
+			WebUtil.redirect(request, response, "/pbc?action=list");
 			/*
 			response.sendRedirect("./pbc?action=list");
 			*/
+		}else if("updateForm".equals(action)) {
+			int id = Integer.parseInt(request.getParameter("id"));
+			
+			PhoneDao phoneDao = new PhoneDao();
+			PersonVo personVo = phoneDao.getPerson(id);
+			
+			request.setAttribute("pVo", personVo);
+			
+			WebUtil.forward(request, response, "WEB-INF/updateForm.jsp");
+			
+		}else if("update".equals(action)) {
+			int id = Integer.parseInt(request.getParameter("id"));
+			String name = request.getParameter("name");
+			String hp = request.getParameter("hp");
+			String company = request.getParameter("company");
+			
+			PersonVo personVo = new PersonVo(id, name, hp, company);
+			System.out.println(personVo);
+			
+			PhoneDao phoneDao = new PhoneDao();
+			phoneDao.personUpdate(personVo);
+			
+			WebUtil.redirect(request, response, "/pbc?action=list");
 		}else {
 			System.out.println("action 파라미터 없음");
 		}
